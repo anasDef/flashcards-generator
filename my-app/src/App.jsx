@@ -21,8 +21,8 @@ function App() {
       <FlashcardsProvider>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/create-set:/id" element={<CreateSet />} />
-          <Route path="/cards:/id" element={<Cards />} />
+          <Route path="/create-set/:id" element={<CreateSet />} />
+          <Route path="/cards/:id" element={<Cards />} />
         </Routes>
       </FlashcardsProvider>
     </>
