@@ -23,12 +23,19 @@ export default function FlashcardsProvider({ children }) {
   };
 
   const handleCurrentSetChange = (key, value) => {
-    setCurrentSet({...currentSet, [key]: value});
-  }
+    setCurrentSet({ ...currentSet, [key]: value });
+  };
   return (
-    <FlashcardsContext.Provider 
-        value={cardsSets , currentSet, handleAddSetClick, handleDeleteSetClick, handleCurrentSetChange}
+    <FlashcardsContext.Provider
+      value={{
+        cardsSets,
+        currentSet,
+        handleAddSetClick,
+        handleDeleteSetClick,
+        handleCurrentSetChange,
+      }}
     >
-        {children}
-    </FlashcardsContext.Provider>);
+      {children}
+    </FlashcardsContext.Provider>
+  );
 }

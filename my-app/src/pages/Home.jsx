@@ -1,27 +1,29 @@
 import { CiCirclePlus } from "react-icons/ci";
+import { IoChevronDown } from "react-icons/io5";
 import { Link } from "react-router";
+import { useContext, useMemo, useState } from "react";
 import SetCard from "../components/SetCard";
-import "./Home.css";
 import { FlashcardsContext } from "../context/FlashcardsContext";
-import { useMemo, useState, useContext } from "react";
+import "./Home.css";
 
-// Available filtering options for the dashboard
 const filters = [
   { label: "الكل", tone: "all", id: 1 },
   { label: "ضعيف", tone: "weak", id: 2 },
   { label: "متوسط", tone: "medium", id: 3 },
-  { label: "قوي", tone: "strong", id: 4 },
+  { label: "ممتاز", tone: "strong", id: 4 },
 ];
 
-// Dashboard component to display, filter, and manage flashcard sets
 export default function Home() {
-  const { sets } = useContext(FlashcardsContext);
+  const { cardsSets } = useContext(FlashcardsContext);
   const [selectedFilter, setSelectedFilter] = useState("all");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  // Dynamically calculates progress/status for each set and applies the filter
+  const activeFilterLabel =
+    filters.find((filter) => filter.tone === selectedFilter)?.label ||
+    filters[0].label;
+
   const filteredSets = useMemo(() => {
-    const computedSets = sets.map((set) => {
-      // Calculate completion percentage based on understood cards
+    const computedSets = cardsSets.map((set) => {
       const setProgress =
         set.cards.length > 0
           ? Math.round(
@@ -31,7 +33,6 @@ export default function Home() {
             )
           : 0;
 
-      // Determine the performance status based on the progress percentage
       let tone = "weak";
       if (setProgress > 50 && setProgress <= 80) {
         tone = "medium";
@@ -46,14 +47,12 @@ export default function Home() {
       };
     });
 
-    // Return all items if no specific filter is chosen, otherwise filter by status
     if (selectedFilter === "all") return computedSets;
     return computedSets.filter((set) => set.calculatedTone === selectedFilter);
-  }, [sets, selectedFilter]);
+  }, [cardsSets, selectedFilter]);
 
   return (
     <main className="home">
-      {/* Dashboard Top Header */}
       <header className="home__header">
         <div className="container home__header-container">
           <div className="home__title">
@@ -62,46 +61,92 @@ export default function Home() {
               التقط من حيث توقفت أو قم بإنشاء مجموعة جديدة.
             </p>
           </div>
-
-          <Link to="/create-set/new">
-            <button className="home__header-button" type="button">
-              إنشاء مجموعة جديدة
-              <CiCirclePlus className="home__header-icon" />
-            </button>
-          </Link>
         </div>
       </header>
 
-      {/* Filter Controls Section */}
-      <section className="home__filters container" aria-label="تصفية المجموعات">
-        <p className="home__filters-label">تصفية حسب:</p>
+      <section className="home__filters container" aria-label="ازرار التصفية">
+        <div className="home__filters-actions">
+          <div className="home__filters-group">
+            <p className="home__filters-label">تصفية حسب:</p>
 
-        {filters.map((filter) => (
-          <button
-            key={filter.id}
-            className={`home__filter-button ${
-              filter.tone ? `home__filter-button--${filter.tone}` : ""
-            } ${filter.tone === selectedFilter ? "active" : ""}`}
-            type="button"
-            value={filter.tone}
-            onClick={(e) => setSelectedFilter(e.currentTarget.value)}
-          >
-            <span>{filter.label}</span>
-            {filter.tone != "all" && (
-              <span
-                className={`home__filter-dot home__filter-dot--${filter.tone}`}
-              />
-            )}
-          </button>
-        ))}
+            <div className="home__filters-desktop">
+              {filters.map((filter) => (
+                <button
+                  key={filter.id}
+                  className={`home__filter-button ${
+                    filter.tone ? `home__filter-button--${filter.tone}` : ""
+                  } ${filter.tone === selectedFilter ? "active" : ""}`}
+                  type="button"
+                  value={filter.tone}
+                  onClick={(event) =>
+                    setSelectedFilter(event.currentTarget.value)
+                  }
+                >
+                  <span>{filter.label}</span>
+                  {filter.tone !== "all" && (
+                    <span
+                      className={`home__filter-dot home__filter-dot--${filter.tone}`}
+                    />
+                  )}
+                </button>
+              ))}
+            </div>
+
+            <div className="home__filters-mobile">
+              <button
+                className="home__dropdown-trigger"
+                type="button"
+                aria-expanded={isDropdownOpen}
+                aria-controls="home-filters-menu"
+                onClick={() => setIsDropdownOpen((prevState) => !prevState)}
+              >
+                <span>{activeFilterLabel}</span>
+                <IoChevronDown
+                  className={`home__dropdown-icon ${
+                    isDropdownOpen ? "home__dropdown-icon--open" : ""
+                  }`}
+                />
+              </button>
+
+              {isDropdownOpen && (
+                <div className="home__dropdown-menu" id="home-filters-menu">
+                  {filters.map((filter) => (
+                    <button
+                      key={filter.id}
+                      className={`home__dropdown-item ${
+                        filter.tone === selectedFilter ? "active" : ""
+                      }`}
+                      type="button"
+                      onClick={() => {
+                        setSelectedFilter(filter.tone);
+                        setIsDropdownOpen(false);
+                      }}
+                    >
+                      <span>{filter.label}</span>
+                      {filter.tone !== "all" && (
+                        <span
+                          className={`home__filter-dot home__filter-dot--${filter.tone}`}
+                        />
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <Link className="home__create-link" to="/create-set/new">
+            <button className="home__create-button" type="button">
+              انشاء مجموعة جديدة
+              <CiCirclePlus className="home__create-icon" />
+            </button>
+          </Link>
+        </div>
       </section>
 
-      {/* Flashcard Sets Grid Section */}
       <section className="home__sets container">
         {filteredSets.length > 0 ? (
-          filteredSets.map((set) => {
-            return <SetCard set={set} key={set.id} />;
-          })
+          filteredSets.map((set) => <SetCard set={set} key={set.id} />)
         ) : (
           <p className="home__no-sets">لا يوجد مجموعات</p>
         )}
