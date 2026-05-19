@@ -1,30 +1,12 @@
 import "./App.css";
 import { Routes, Route } from "react-router";
-import { useMemo, useState } from "react";
-import { useLocalStorage } from "./hooks/useLocalStorage";
 import { TbPlayCardStarFilled } from "react-icons/tb";
 import Home from "./pages/Home";
 import CreateSet from "./pages/CreateSet";
 import Cards from "./pages/Cards";
+import FlashcardsProvider from "./context/FlashcardsContext";
 
 function App() {
-  const [cardsSets, setCardsSets] = useLocalStorage("cardsSets", []);
-  const [cardsSet, setCardsSet] = useState({
-    title: "",
-    description: "",
-    id: "",
-    cards: [],
-  });
-
-  // ==== HANDLERS
-  const handleAddSetClick = (newSet) => {
-    setCardsSets([...cardsSets, newSet]);
-  };
-
-  const handleDeleteSetClick = (id) => {
-    setCardsSets(cardsSets.filter((set) => set.id !== id));
-  };
-
   return (
     <>
       <header className="header">
@@ -36,14 +18,13 @@ function App() {
         </div>
       </header>
       {/* ============= */}
-      <Routes>
-        <Route
-          path="/"
-          element={<Home sets={cardsSets} onDeleteSet={handleDeleteSetClick} />}
-        />
-        <Route path="/create-set:/id" element={<CreateSet />} />
-        <Route path="/cards:/id" element={<Cards />} />
-      </Routes>
+      <FlashcardsProvider>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/create-set:/id" element={<CreateSet />} />
+          <Route path="/cards:/id" element={<Cards />} />
+        </Routes>
+      </FlashcardsProvider>
     </>
   );
 }

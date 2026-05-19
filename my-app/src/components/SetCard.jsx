@@ -1,7 +1,9 @@
 import { Link } from "react-router";
 import { MdEdit, MdDelete } from "react-icons/md";
 import { FaRegPlayCircle } from "react-icons/fa";
-import "./Set.css";
+import { FlashcardsContext } from "../context/FlashcardsContext";
+import "./SetCard.css";
+import { useContext } from "react";
 
 // Helper function to translate performance status into Arabic text
 const getToneLabel = (tone) => {
@@ -18,7 +20,8 @@ const getToneLabel = (tone) => {
 };
 
 // Component representing a single flashcard set card item
-export default function FlashcardSetCard({ set, onDeleteSet }) {
+export default function SetCard({ set }) {
+  const { handleDeleteSetClick } = useContext(FlashcardsContext);
   return (
     <article className="home__set-card">
       {/* Decorative corner indicator based on performance status */}
@@ -44,7 +47,7 @@ export default function FlashcardSetCard({ set, onDeleteSet }) {
             className="home__set-button home__set-button--delete"
             type="button"
             aria-label="حذف المجموعة"
-            onClick={() => onDeleteSet(set.id)}
+            onClick={() => handleDeleteSetClick(set.id)}
           >
             <MdDelete />
           </button>

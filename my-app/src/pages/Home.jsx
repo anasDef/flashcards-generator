@@ -1,8 +1,9 @@
 import { CiCirclePlus } from "react-icons/ci";
 import { Link } from "react-router";
-import Set from "../components/Set";
+import SetCard from "../components/SetCard";
 import "./Home.css";
-import { useMemo, useState } from "react";
+import { FlashcardsContext } from "../context/FlashcardsContext";
+import { useMemo, useState, useContext } from "react";
 
 // Available filtering options for the dashboard
 const filters = [
@@ -13,7 +14,8 @@ const filters = [
 ];
 
 // Dashboard component to display, filter, and manage flashcard sets
-export default function Home({ sets, onDeleteSet }) {
+export default function Home() {
+  const { sets } = useContext(FlashcardsContext);
   const [selectedFilter, setSelectedFilter] = useState("all");
 
   // Dynamically calculates progress/status for each set and applies the filter
@@ -98,7 +100,7 @@ export default function Home({ sets, onDeleteSet }) {
       <section className="home__sets container">
         {filteredSets.length > 0 ? (
           filteredSets.map((set) => {
-            return <Set set={set} onDeleteSet={onDeleteSet} key={set.id} />;
+            return <SetCard set={set} key={set.id} />;
           })
         ) : (
           <p className="home__no-sets">لا يوجد مجموعات</p>
