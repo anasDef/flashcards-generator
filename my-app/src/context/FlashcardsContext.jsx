@@ -1,7 +1,7 @@
 import { createContext } from "react";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 
-// EDITED BY CODEX
+
 // eslint-disable-next-line react-refresh/only-export-components
 export const FlashcardsContext = createContext([]);
 
@@ -29,6 +29,16 @@ export default function FlashcardsProvider({ children }) {
   };
 
   const handleCurrentSetChange = (newValue) => setCurrentSet(newValue);
+
+  // EDITED BY CODEX
+  const handleEditSetClick = (updatedSet) => {
+    setCardsSets(
+      cardsSets.map((set) =>
+        String(set.id) === String(updatedSet.id) ? updatedSet : set,
+      ),
+    );
+  };
+
   return (
     <FlashcardsContext.Provider
       value={{
@@ -36,6 +46,7 @@ export default function FlashcardsProvider({ children }) {
         currentSet,
         handleAddSetClick,
         handleDeleteSetClick,
+        handleEditSetClick,
         handleSpecificCurrentSetChange,
         handleCurrentSetChange,
       }}

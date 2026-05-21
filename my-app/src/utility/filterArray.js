@@ -1,11 +1,14 @@
+// EDITED BY CODEX
 export function filterCardsSets(array) {
+  if (!Array.isArray(array)) return [];
   return array.map((set) => {
+    const cards = Array.isArray(set?.cards) ? set.cards : [];
     const setProgress =
-      set.cards.length > 0
+      cards.length > 0
         ? Math.round(
-            (set.cards.filter((card) => card.isUnderstood).length /
-              set.cards.length) *
-              100,
+            (cards.filter((card) => card.isUnderstood).length /
+              cards.length) *
+            100,
           )
         : 0;
 
@@ -18,6 +21,7 @@ export function filterCardsSets(array) {
 
     return {
       ...set,
+      cards,
       progress: setProgress,
       calculatedTone: tone,
     };

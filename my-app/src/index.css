@@ -144,3 +144,26 @@ body {
   width: 95%;
   margin: 0 auto;
 }
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-base);
+  border: 0;
+  border-radius: var(--rounded-full);
+  padding: 14px 24px;
+  background-color: var(--color-primary-container);
+  color: var(--color-on-primary);
+  font-family: var(--font-family-body);
+  font-size: var(--font-label-lg-size);
+  font-weight: var(--font-label-lg-weight);
+  line-height: var(--font-label-lg-line-height);
+  box-shadow: var(--button-shadow);
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+
+  &:active {
+    transform: translateY(4px);
+    box-shadow: none;
+  }
+}

@@ -1,4 +1,5 @@
-﻿import { useParams, Link } from "react-router";
+// EDITED BY CODEX
+import { useParams, Link, useNavigate } from "react-router";
 import { useState, useContext, useEffect } from "react";
 import { FlashcardsContext } from "../context/FlashcardsContext";
 import { FiArrowLeft } from "react-icons/fi";
@@ -8,6 +9,7 @@ import { FaRegSave } from "react-icons/fa";
 import ManualMode from "../components/ManualMode";
 import "./CreateSet.css";
 
+// Config array defining inputs for the flashcard set meta details (Title & Description)
 const createSetHeaderFields = [
   {
     id: "title",
@@ -23,19 +25,29 @@ const createSetHeaderFields = [
   },
 ];
 
+/**
+ * CreateSet Component
+ * Manages the creation of a new flashcards set or the updating/editing of an existing one.
+ * Includes interactive tab navigation for Manual and AI editing modes.
+ */
 export default function CreateSet() {
   const { setId } = useParams();
+  // Initialize navigation hook for page redirects
+  const navigate = useNavigate();
+
   const {
     currentSet,
     cardsSets,
     handleCurrentSetChange,
     handleSpecificCurrentSetChange,
-    handleDeleteSetClick,
     handleAddSetClick,
+    handleEditSetClick,
   } = useContext(FlashcardsContext);
 
-  // states
+  // State to manage active editor tab mode ("manual" or "ai")
   const [mode, setMode] = useState("manual");
+
+  // State indicating if we are in "Edit Mode" (existing set) vs "Create Mode" (new set)
   const [isEdit, setIsEdit] = useState(false);
 
   // ===== HANDLERS =====
@@ -43,13 +55,13 @@ export default function CreateSet() {
     setMode(newMode);
   };
 
+  // Saves modified set changes by dispatching update action and redirecting to dashboard
   const handleSaveEditClick = (set) => {
-    const editSet = { ...set };
-    const newSet = set.splice(cardsSets.findIndex((card) => card.id == setId), 1, editSet);
-    handleAddSetClick(newSet)
+    handleEditSetClick(set);
+    navigate("/");
   };
 
-  // check if the user clicked on edit set button
+  // Syncs current set metadata and mode if editing an existing set ID
   useEffect(() => {
     if (setId !== "new") {
       const existingSet = cardsSets.find((set) => set.id == setId);
@@ -63,6 +75,8 @@ export default function CreateSet() {
   return (
     <main className="create-set">
       <div className="container create-set__container">
+
+        {/* Component Header containing navigation and metadata inputs */}
         <header className="create-set__header">
           <nav
             className="create-set__header-nav"
@@ -75,6 +89,8 @@ export default function CreateSet() {
 
           <div className="create-set__header-fields">
             <h1 className="create-set__title">إنشاء مجموعة جديدة</h1>
+
+            {/* Iterates and renders metadata input fields */}
             {createSetHeaderFields.map((field) => (
               <section className="create-set__field" key={field.id}>
                 <label className="create-set__field-label" htmlFor={field.id}>
@@ -111,7 +127,10 @@ export default function CreateSet() {
           </div>
         </header>
 
+        {/* Card editor workspace section */}
         <main className="create-set__create-cards">
+
+          {/* Editor tab switches */}
           <header className="create-set__switch-buttons">
             <button
               value="manual"
@@ -131,15 +150,21 @@ export default function CreateSet() {
             </button>
           </header>
 
+          {/* Render selected editor component tab */}
           {mode === "manual" ? <ManualMode /> : "AI Mode"}
         </main>
 
+        {/* Footer actions for saving set data */}
         <footer className="create-set__footer">
           <button
             className="create-set__save-button button"
             onClick={() => {
-              if (isEdit) handleSaveEditClick(currentSet);
-              else handleAddSetClick(currentSet);
+              if (isEdit) {
+                handleSaveEditClick(currentSet);
+              } else {
+                handleAddSetClick(currentSet);
+                navigate("/");
+              }
             }}
           >
             <FaRegSave aria-hidden="true" />
@@ -150,3 +175,4 @@ export default function CreateSet() {
     </main>
   );
 }
+
