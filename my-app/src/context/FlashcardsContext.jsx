@@ -1,16 +1,18 @@
-import { useState, createContext } from "react";
+import { createContext } from "react";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 
+// EDITED BY CODEX
+// eslint-disable-next-line react-refresh/only-export-components
 export const FlashcardsContext = createContext([]);
 
 export default function FlashcardsProvider({ children }) {
   const [cardsSets, setCardsSets] = useLocalStorage("cardsSets", []);
-  const [currentSet, setCurrentSet] = useState({
+  const [currentSet, setCurrentSet] = useLocalStorage("currentSet", {
     title: "",
     description: "",
-    id: "",
     source: "يدوي",
     cards: [],
+    id: Date.now(),
   });
 
   // ==== HANDLERS ==== //
@@ -22,9 +24,11 @@ export default function FlashcardsProvider({ children }) {
     setCardsSets(cardsSets.filter((set) => set.id !== id));
   };
 
-  const handleCurrentSetChange = (key, value) => {
+  const handleSpecificCurrentSetChange = (key, value) => {
     setCurrentSet({ ...currentSet, [key]: value });
   };
+
+  const handleCurrentSetChange = (newValue) => setCurrentSet(newValue);
   return (
     <FlashcardsContext.Provider
       value={{
@@ -32,6 +36,7 @@ export default function FlashcardsProvider({ children }) {
         currentSet,
         handleAddSetClick,
         handleDeleteSetClick,
+        handleSpecificCurrentSetChange,
         handleCurrentSetChange,
       }}
     >

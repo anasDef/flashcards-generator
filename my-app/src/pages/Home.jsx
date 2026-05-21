@@ -4,6 +4,7 @@ import { Link } from "react-router";
 import { useContext, useMemo, useState } from "react";
 import SetCard from "../components/SetCard";
 import { FlashcardsContext } from "../context/FlashcardsContext";
+import { filterCardsSets } from "../utility/filterArray";
 import "./Home.css";
 
 const filters = [
@@ -14,7 +15,7 @@ const filters = [
 ];
 
 export default function Home() {
-  const { cardsSets } = useContext(FlashcardsContext);
+  const { cardsSets, handleCurrentSetChange } = useContext(FlashcardsContext);
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -23,30 +24,7 @@ export default function Home() {
     filters[0].label;
 
   const filteredSets = useMemo(() => {
-    const computedSets = cardsSets.map((set) => {
-      const setProgress =
-        set.cards.length > 0
-          ? Math.round(
-              (set.cards.filter((card) => card.isUnderstood).length /
-                set.cards.length) *
-                100,
-            )
-          : 0;
-
-      let tone = "weak";
-      if (setProgress > 50 && setProgress <= 80) {
-        tone = "medium";
-      } else if (setProgress > 80) {
-        tone = "strong";
-      }
-
-      return {
-        ...set,
-        progress: setProgress,
-        calculatedTone: tone,
-      };
-    });
-
+    const computedSets = filterCardsSets(cardsSets);
     if (selectedFilter === "all") return computedSets;
     return computedSets.filter((set) => set.calculatedTone === selectedFilter);
   }, [cardsSets, selectedFilter]);
@@ -135,8 +113,20 @@ export default function Home() {
             </div>
           </div>
 
-          <Link className="home__create-link" to="/create-set/new">
-            <button className="home__create-button" type="button">
+          <Link
+            className="home__create-link"
+            to="/create-set/new"
+            onClick={() =>
+              handleCurrentSetChange({
+                title: "",
+                description: "",
+                source: "يدوي",
+                cards: [],
+                id: Date.now(),
+              })
+            }
+          >
+            <button className="home__create-button button" type="button">
               انشاء مجموعة جديدة
               <CiCirclePlus className="home__create-icon" />
             </button>

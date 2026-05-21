@@ -1,0 +1,195 @@
+﻿/* EDITED BY CODEX */
+/* Missing semantic token for placeholder in index.css, so this is scoped to CreateSet page only. */
+:root {
+  --create-set-placeholder: #6b7280;
+}
+
+.create-set {
+  .create-set__container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-container-padding-desktop);
+  }
+  .create-set__header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: 32px;
+    margin-top: 48px;
+    margin-inline-start: auto;
+    margin-inline-end: 0;
+  }
+
+  .create-set__title {
+    color: var(--color-primary);
+    font-size: var(--font-headline-md-size);
+    font-weight: var(--font-headline-md-weight);
+    line-height: var(--font-headline-md-line-height);
+    text-align: right;
+  }
+
+  .create-set__header-nav {
+    order: 1;
+  }
+
+  .create-set__header-fields {
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .create-set__field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .create-set__field-label {
+    color: var(--color-on-surface-variant);
+    font-size: var(--font-label-sm-size);
+    font-weight: var(--font-label-sm-weight);
+    line-height: var(--font-label-sm-line-height);
+    text-align: right;
+  }
+
+  .create-set__field-input {
+    width: 100%;
+    border: 2px solid var(--color-outline-variant);
+    outline: 0;
+    background-color: var(--color-surface-container-lowest);
+    box-shadow: 0px 4px 0px var(--color-outline-variant);
+    border-radius: var(--rounded-full);
+    min-height: 56px;
+    padding-block: 12px;
+    padding-inline: 20px;
+    color: var(--create-set-placeholder);
+    font-size: var(--font-body-md-size);
+    font-weight: var(--font-body-md-weight);
+    line-height: var(--font-body-md-line-height);
+    text-align: right;
+    font-family: var(--font-family-body);
+
+    transition: 0.2s ease-in-out;
+
+    &:focus {
+      transform: translateY(4px);
+      box-shadow: 0px 0px 15px var(--color-outline-variant) inset;
+    }
+  }
+
+  .create-set__field-input::placeholder {
+    color: var(--create-set-placeholder);
+  }
+
+  .create-set__field-input--textarea {
+    resize: none;
+    min-height: 104px;
+    border-radius: var(--rounded-md);
+    padding-top: 14px;
+    padding-bottom: 44px;
+  }
+
+  .create-set__create-cards {
+    width: 100%;
+    border-radius: var(--rounded-lg);
+    background-color: var(--color-surface-container);
+    border: 2px solid var(--color-outline-variant);
+    box-shadow: 0px 4px 0px var(--color-outline-variant);
+    padding: var(--spacing-container-padding-desktop);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-container-padding-desktop);
+    align-items: center;
+  }
+
+  .create-set__switch-buttons {
+    padding: var(--spacing-base);
+    display: flex;
+    align-items: center;
+    width: 420px;
+    justify-content: space-between;
+    border-radius: var(--rounded-xl);
+    background-color: var(--color-surface-container-high);
+    box-shadow: 0px 0px 10px var(--color-outline-variant) inset;
+  }
+
+  .create-set__switch-button {
+    font-size: var(--font-body-lg-size);
+    font-family: var(--font-family-body);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-base);
+    color: var(--color-on-surface-variant);
+    border: none;
+    border-radius: var(--rounded-md);
+    background-color: transparent;
+    cursor: pointer;
+    padding: 12px var(--spacing-card-gap);
+    transition: 0.2s ease-in-out;
+
+    &.create-set__switch-button--active {
+      background-color: var(--color-primary-container);
+      color: var(--color-on-primary);
+    }
+  }
+
+  .create-set__footer {
+    padding-block: var(--spacing-card-gap);
+  }
+}
+
+@media (max-width: 768px) {
+  .create-set {
+    .create-set__header {
+      width: 100%;
+      margin-top: 24px;
+      gap: 24px;
+    }
+
+    .create-set__title {
+      font-size: var(--font-headline-sm-size);
+      font-weight: var(--font-headline-sm-weight);
+      line-height: var(--font-headline-sm-line-height);
+    }
+
+    .create-set__header-fields {
+      gap: 14px;
+    }
+
+    .create-set__field-input {
+      min-height: 52px;
+      padding-block: 10px;
+      padding-inline: 16px;
+      font-size: var(--font-body-md-size);
+      line-height: var(--font-body-md-line-height);
+      width: 100%;
+    }
+
+    .create-set__field-input--textarea {
+      min-height: 96px;
+      padding-top: 12px;
+      padding-bottom: 36px;
+      font-size: var(--font-label-lg-size);
+      line-height: var(--font-label-lg-line-height);
+    }
+
+    .create-set__create-cards {
+      padding: var(--spacing-container-padding-mobile);
+    }
+
+    .create-set__switch-buttons {
+      flex-direction: column;
+      border-radius: var(--rounded-lg);
+      gap: var(--spacing-base);
+      width: 100%;
+    }
+
+    .create-set__switch-button {
+      width: 100%;
+      justify-content: center;
+      font-size: var(--font-body-sm-size);
+    }
+  }
+}
