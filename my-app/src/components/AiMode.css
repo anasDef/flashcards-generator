@@ -1,0 +1,211 @@
+/* EDITED BY CODEX */
+.ai-mode {
+  /* The requested placeholder token is missing from index.css, so it is scoped here for this component. */
+  --color-set-placeholder: #6b7280;
+
+  width: min(100%, 1040px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gutter);
+
+  .ai-mode__title {
+    color: var(--color-primary);
+    font-size: var(--font-label-sm-size);
+    font-weight: var(--font-label-sm-weight);
+    line-height: var(--font-label-sm-line-height);
+    text-align: right;
+  }
+
+  .ai-mode__source-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--spacing-card-gap);
+    align-items: end;
+  }
+
+  .ai-mode__field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-base);
+  }
+
+  .ai-mode__field--instructions {
+    width: 100%;
+  }
+
+  .ai-mode__label,
+  .ai-mode__optional-label {
+    color: var(--color-on-surface-variant);
+    font-size: var(--font-label-lg-size);
+    font-weight: var(--font-label-lg-weight);
+    line-height: var(--font-label-lg-line-height);
+    text-align: right;
+  }
+
+  .ai-mode__optional-label {
+    margin-top: calc(var(--spacing-base) * -0.5);
+  }
+
+  /* These edits for you comment (codex) */
+  .ai-mode__control,
+  .ai-mode__textarea {
+    width: 100%;
+    border: 2px solid var(--color-outline-variant);
+    outline: 0;
+    background-color: var(--color-surface-container-lowest);
+    color: var(--color-on-surface);
+    transition: 0.2s ease-in-out;
+
+    &:focus,
+    &:focus-within {
+      border-color: var(--color-primary-container);
+      box-shadow: 0 0 0 3px rgba(98, 43, 20, 0.1);
+    }
+  }
+
+  .ai-mode__control {
+    position: relative;
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-base);
+    border-radius: var(--rounded-full);
+    padding-inline: var(--spacing-gutter);
+    overflow: hidden;
+
+    svg {
+      flex: 0 0 auto;
+      color: var(--color-set-placeholder);
+      font-size: 18px;
+    }
+  }
+
+  .ai-mode__control--file {
+    justify-content: space-between;
+    border-style: dashed;
+    cursor: pointer;
+  }
+
+  .ai-mode__control--active {
+    border-color: var(--color-primary-container);
+    border-style: solid;
+    background-color: var(--color-primary-fixed);
+    box-shadow: 0 0 0 3px rgba(98, 43, 20, 0.1);
+
+    .ai-mode__control-value,
+    svg {
+      color: var(--color-primary-container);
+    }
+  }
+
+  /* These edits for you comment (codex) */
+  .ai-mode__control-field,
+  .ai-mode__control-value,
+  .ai-mode__textarea {
+    font-family: var(--font-family-body);
+    font-size: var(--font-body-md-size);
+    font-weight: var(--font-body-md-weight);
+    line-height: var(--font-body-md-line-height);
+    text-align: right;
+  }
+
+  .ai-mode__control-field {
+    width: 100%;
+    min-height: 52px;
+    border: 0;
+    outline: 0;
+    background-color: transparent;
+    color: var(--color-on-surface);
+
+    &::placeholder {
+      color: var(--color-set-placeholder);
+      opacity: 1;
+    }
+  }
+
+  .ai-mode__control-value {
+    min-width: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-base);
+    color: var(--color-set-placeholder);
+  }
+
+  .ai-mode__native-file {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .ai-mode__textarea {
+    min-height: 86px;
+    resize: vertical;
+    border-radius: var(--rounded-lg);
+    padding: 18px 20px;
+
+    &::placeholder {
+      color: var(--color-set-placeholder);
+      opacity: 1;
+    }
+  }
+
+  .ai-mode__generate-button {
+    width: 100%;
+    min-height: 76px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-base);
+    border: 0;
+    border-radius: var(--rounded-sm);
+    background-color: var(--color-primary-container);
+    color: var(--color-on-primary);
+    font-family: var(--font-family-body);
+    font-size: var(--font-body-lg-size);
+    font-weight: 700;
+    line-height: var(--font-body-lg-line-height);
+    box-shadow: var(--button-shadow);
+    cursor: pointer;
+    transition: 0.2s ease-in-out;
+
+    svg {
+      font-size: 20px;
+    }
+
+    &:focus-visible {
+      outline: 3px solid var(--color-outline-variant);
+      outline-offset: 4px;
+    }
+
+    &:active {
+      transform: translateY(4px);
+      box-shadow: none;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .ai-mode {
+    width: 100%;
+
+    .ai-mode__source-fields {
+      grid-template-columns: 1fr;
+      gap: var(--spacing-gutter);
+    }
+
+    .ai-mode__control {
+      min-height: 52px;
+    }
+
+    .ai-mode__textarea {
+      min-height: 112px;
+    }
+
+    .ai-mode__generate-button {
+      min-height: 68px;
+      font-size: var(--font-label-lg-size);
+      line-height: var(--font-label-lg-line-height);
+    }
+  }
+}

@@ -7,6 +7,7 @@ import { FaPencilAlt } from "react-icons/fa";
 import { BsStars } from "react-icons/bs";
 import { FaRegSave } from "react-icons/fa";
 import ManualMode from "../components/ManualMode";
+import AiMode from "../components/AiMode";
 import "./CreateSet.css";
 
 // Config array defining inputs for the flashcard set meta details (Title & Description)
@@ -151,7 +152,7 @@ export default function CreateSet() {
           </header>
 
           {/* Render selected editor component tab */}
-          {mode === "manual" ? <ManualMode /> : "AI Mode"}
+          {mode === "manual" ? <ManualMode /> : <AiMode handleModeChange={handleModeChange} />}
         </main>
 
         {/* Footer actions for saving set data */}
@@ -175,4 +176,3 @@ export default function CreateSet() {
     </main>
   );
 }
-
