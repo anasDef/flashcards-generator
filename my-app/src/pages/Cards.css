@@ -1,0 +1,368 @@
+/* EDITED BY CODEX */
+
+/* ============================================================
+   CARD SLIDE-FADE KEYFRAMES
+   exit-left  → card slides out to the left  (next card)
+   exit-right → card slides out to the right (prev card)
+   enter-right → new card enters from the right (next card)
+   enter-left  → new card enters from the left  (prev card)
+   ============================================================ */
+@keyframes slideExitLeft {
+  from {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-60px) scale(0.97);
+  }
+}
+
+@keyframes slideExitRight {
+  from {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(60px) scale(0.97);
+  }
+}
+
+@keyframes slideEnterRight {
+  from {
+    opacity: 0;
+    transform: translateX(60px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes slideEnterLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-60px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* ============================================================
+   ROOT SECTION
+   ============================================================ */
+.cards {
+  /* min-height: 100vh; */
+  padding: 36px 0 48px;
+  background-color: var(--color-surface-container-lowest);
+
+  /* ── Header ─────────────────────────────────────────────── */
+  .cards__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+
+    .cards__title {
+      font-size: var(--font-headline-sm-size);
+      font-weight: var(--font-headline-sm-weight);
+      line-height: var(--font-headline-sm-line-height);
+      color: var(--color-primary);
+    }
+
+    .cards__counter {
+      font-size: var(--font-label-sm-size);
+      font-weight: var(--font-label-sm-weight);
+      line-height: var(--font-label-sm-line-height);
+      color: var(--color-on-surface-variant);
+    }
+  }
+
+  /* ── Progress Bar ────────────────────────────────────────── */
+  .cards__progress-bar {
+    width: 100%;
+    height: 8px;
+    background-color: var(--color-surface-container-high);
+    border-radius: var(--rounded-full);
+    overflow: hidden;
+    margin-bottom: 36px;
+
+    .cards__progress-fill {
+      height: 100%;
+      /* Olive-green fill — no token available, defined here */
+      --color-progress-fill: #5a6e3f;
+      background-color: var(--color-progress-fill);
+      border-radius: var(--rounded-full);
+      transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  }
+
+  /* ── Viewer: arrows + card ────────────────────────────────── */
+  .cards__viewer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 44px;
+  }
+
+  /* ── Card Wrapper (slide-fade host) ─────────────────────── */
+  .cards__card-wrapper {
+    flex: 1;
+    max-width: 500px;
+    /* Perspective for the 3D flip inside */
+    perspective: 1400px;
+
+    &.cards__card-wrapper--exit-left {
+      animation: slideExitLeft 0.28s ease forwards;
+    }
+
+    &.cards__card-wrapper--exit-right {
+      animation: slideExitRight 0.28s ease forwards;
+    }
+
+    &.cards__card-wrapper--enter-right {
+      animation: slideEnterRight 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    &.cards__card-wrapper--enter-left {
+      animation: slideEnterLeft 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+  }
+
+  /* ── Card (3D flip container) ────────────────────────────── */
+  .cards__card {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    cursor: pointer;
+
+    /* 3D flip settings */
+    transform-style: preserve-3d;
+    transition: transform 0.62s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:focus-visible {
+      outline: 2px solid var(--color-secondary);
+      outline-offset: 4px;
+      border-radius: var(--rounded-md);
+    }
+
+    /* Flipped state — rotate the full container */
+    &.cards__card--flipped {
+      transform: rotateY(180deg);
+    }
+
+    /* ── Shared face styles ──────────────────────────────────── */
+    .cards__card-front,
+    .cards__card-back {
+      position: absolute;
+      inset: 0;
+
+      /* Hide back face while looking at front, and vice-versa */
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 32px 28px;
+
+      background-color: var(--color-surface-container-lowest);
+      border-radius: var(--rounded-md);
+
+      /* Warm brownish border matching the design */
+      border: 2px solid var(--color-outline-variant);
+
+      /* Bottom shadow to give the card a 3D-lifted feel */
+      box-shadow:
+        0 4px 0 var(--color-primary-container),
+        0 6px 24px rgba(70, 22, 2, 0.1);
+    }
+
+    /* Back face must start mirrored */
+    .cards__card-back {
+      transform: rotateY(180deg);
+    }
+
+    /* ── Card text ────────────────────────────────────────────── */
+    .cards__card-text {
+      font-size: var(--font-headline-md-size);
+      font-weight: var(--font-headline-md-weight);
+      line-height: var(--font-headline-md-line-height);
+      color: var(--color-primary);
+      text-align: center;
+    }
+
+    /* ── Hint text ─────────────────────────────────────────────── */
+    .cards__card-hint {
+      font-size: var(--font-body-md-size);
+      font-weight: var(--font-body-md-weight);
+      line-height: var(--font-body-md-line-height);
+      color: var(--color-on-surface-variant);
+      text-align: center;
+    }
+  }
+
+  /* ── Badge / Pill ─────────────────────────────────────────── */
+  .cards__badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 14px;
+    border-radius: var(--rounded-full);
+    font-size: var(--font-label-sm-size);
+    font-weight: 600;
+    line-height: var(--font-label-sm-line-height);
+
+    /* "مصطلح" badge — uses secondary container tokens */
+    background-color: var(--color-secondary-container);
+    color: var(--color-on-secondary-container);
+
+    /* "تعريف" badge — uses tertiary container tokens */
+    &.cards__badge--definition {
+      background-color: var(--color-tertiary-container);
+      color: var(--color-on-tertiary-container);
+    }
+  }
+
+  /* ── Navigation Arrow Buttons ─────────────────────────────── */
+  .cards__nav-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: var(--rounded-full);
+    border: 1.5px solid var(--color-outline-variant);
+    background-color: var(--color-surface-container-lowest);
+    color: var(--color-on-surface-variant);
+    cursor: pointer;
+    transition:
+      background-color 0.18s ease,
+      border-color 0.18s ease,
+      color 0.18s ease,
+      transform 0.12s ease;
+
+    &:hover:not(:disabled) {
+      background-color: var(--color-surface-container);
+      border-color: var(--color-outline);
+      color: var(--color-primary);
+    }
+
+    &:active:not(:disabled) {
+      transform: scale(0.9);
+    }
+
+    &:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+  }
+
+  /* ── Action Buttons Row ──────────────────────────────────── */
+  .cards__actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+  }
+
+  .cards__action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-base);
+    border: 0;
+    border-radius: var(--rounded-full);
+    padding: 14px 36px;
+    font-family: var(--font-family-body);
+    font-size: var(--font-label-lg-size);
+    font-weight: var(--font-label-lg-weight);
+    line-height: var(--font-label-lg-line-height);
+    cursor: pointer;
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease;
+
+    &:active {
+      transform: translateY(4px);
+      box-shadow: none !important;
+    }
+
+    /* "فهمتها ✓" — olive green (no token available, defined here) */
+    &.cards__action-btn--understood {
+      --color-btn-understood: #4d6b41;
+      --shadow-btn-understood: 0 5px 0 rgba(45, 62, 35, 0.35);
+      background-color: var(--color-btn-understood);
+      color: #ffffff;
+      box-shadow: var(--shadow-btn-understood);
+    }
+
+    /* "لم أفهم ×" — uses error tokens */
+    &.cards__action-btn--not-understood {
+      background-color: var(--color-error);
+      color: var(--color-on-error);
+      box-shadow: 0 5px 0 rgba(186, 26, 26, 0.35);
+    }
+  }
+
+  /* ============================================================
+     MOBILE — max-width: 600px
+     ============================================================ */
+  @media (max-width: 600px) {
+    padding: 24px 0 36px;
+
+    .cards__header {
+      margin-bottom: 8px;
+
+      .cards__title {
+        font-size: var(--font-body-lg-size);
+      }
+    }
+
+    .cards__progress-bar {
+      margin-bottom: 24px;
+    }
+
+    .cards__viewer {
+      gap: 8px;
+      margin-bottom: 32px;
+    }
+
+    .cards__card {
+      height: 190px;
+
+      .cards__card-text {
+        font-size: var(--font-headline-sm-size);
+        line-height: var(--font-headline-sm-line-height);
+      }
+
+      .cards__card-hint {
+        font-size: var(--font-label-sm-size);
+      }
+    }
+
+    .cards__nav-btn {
+      width: 34px;
+      height: 34px;
+
+      svg {
+        width: 14px;
+        height: 14px;
+      }
+    }
+
+    .cards__actions {
+      gap: 10px;
+    }
+
+    .cards__action-btn {
+      padding: 12px 22px;
+      font-size: 14px;
+    }
+  }
+}
