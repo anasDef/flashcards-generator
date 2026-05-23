@@ -71,7 +71,7 @@ export async function generateFlashcardsFromAi(
         `;
 
     const response = await fetch(
-      "https://flashcards-generator-v2l3.onrender.com/api/generate-flashcards",
+      "https://flashcards-generator-sbvg.onrender.com/api/generate-flashcards",
       {
         method: "POST",
         headers: {
