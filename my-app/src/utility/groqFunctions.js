@@ -110,6 +110,7 @@ export async function generateFlashcardsFromAi(
 
     return structuredFlashcards;
   } catch (error) {
+    // error component put it here
     console.error("Error generating flashcards:", error);
     throw error;
   }
