@@ -3,7 +3,10 @@
   box-shadow: 0px 4px 1px var(--color-surface-variant);
 
   .header__container {
-    padding-block: var(--spacing-gutter);
+    padding-block: var(--spacing-card-gap);
+    display: flex;
+    justify-content: space-between;
+
     .header__logo {
       display: flex;
       align-items: center;
@@ -16,6 +19,16 @@
       order: -1;
       font-size: 2rem;
       rotate: 20deg;
+    }
+
+    .header__return {
+      text-decoration: none;
+
+      @media screen and (max-width: 786px) {
+        .header__return-text {
+          display: none;
+        }
+      }
     }
   }
 }

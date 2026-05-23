@@ -79,15 +79,6 @@ export default function CreateSet() {
 
         {/* Component Header containing navigation and metadata inputs */}
         <header className="create-set__header">
-          <nav
-            className="create-set__header-nav"
-            aria-label="العودة للصفحة الرئيسية"
-          >
-            <Link className="create-set__back-button button" to="/">
-              <FiArrowLeft aria-hidden="true" />
-            </Link>
-          </nav>
-
           <div className="create-set__header-fields">
             <h1 className="create-set__title">إنشاء مجموعة جديدة</h1>
 

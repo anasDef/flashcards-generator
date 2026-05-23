@@ -1,5 +1,6 @@
 import "./App.css";
-import { Routes, Route } from "react-router";
+import { Routes, Route, Link, useLocation } from "react-router";
+import { IoArrowBack } from "react-icons/io5";
 import { TbPlayCardStarFilled } from "react-icons/tb";
 import Home from "./pages/Home";
 import CreateSet from "./pages/CreateSet";
@@ -7,6 +8,8 @@ import Cards from "./pages/Cards";
 import FlashcardsProvider from "./context/FlashcardsContext";
 
 function App() {
+  const location = useLocation();
+
   return (
     <>
       <header className="header">
@@ -15,6 +18,17 @@ function App() {
             <h1>Memora</h1>
             <TbPlayCardStarFilled className="header__logo-icon" />
           </div>
+
+          {location.pathname !== "/" && (
+            <Link
+              className="header__return button"
+              to="/"
+              aria-label="العودة للرئيسية"
+            >
+              <IoArrowBack />
+              <span className="header__return-text">العودة للرئيسية</span>
+            </Link>
+          )}
         </div>
       </header>
       {/* ============= */}

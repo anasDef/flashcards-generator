@@ -91,15 +91,6 @@ const Cards = () => {
   return (
     <section className="cards">
       <div className="container">
-        {/* ── Return Button ─────────────────────────────────────────── */}
-        <Link
-          className="cards__return button"
-          to="/"
-          aria-label="العودة للرئيسية"
-        >
-          <IoArrowForward />
-        </Link>
-
         {/* ── Header ──────────────────────────────────────────────────
             Gap between return btn and this header = --spacing-gutter  */}
         <header className="cards__header">
@@ -110,6 +101,7 @@ const Cards = () => {
             {" بطاقة"}
           </p>
           <h1 className="cards__title">{currentSet.title}</h1>
+
         </header>
 
         {/* ── Progress Bar ─────────────────────────────────────────── */}
