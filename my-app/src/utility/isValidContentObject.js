@@ -1,5 +1,5 @@
 // EDITED BY CODEX
-export function isEmptyObject(object) {
+export function isValidContentObject(object) {
   if (!object || typeof object !== "object" || Array.isArray(object)) {
     return false;
   }
@@ -20,21 +20,24 @@ export function isEmptyObject(object) {
     }
 
     if (Array.isArray(value)) {
-      return value.length > 0 && value.every((item) => {
-        if (item && typeof item === "object" && !Array.isArray(item)) {
-          return isEmptyObject(item);
-        }
+      return (
+        value.length > 0 &&
+        value.every((item) => {
+          if (item && typeof item === "object" && !Array.isArray(item)) {
+            return isValidContentObject(item);
+          }
 
-        if (typeof item === "string") {
-          return item.trim().length > 0;
-        }
+          if (typeof item === "string") {
+            return item.trim().length > 0;
+          }
 
-        return item !== null && item !== undefined;
-      });
+          return item !== null && item !== undefined;
+        })
+      );
     }
 
     if (typeof value === "object") {
-      return isEmptyObject(value);
+      return isValidContentObject(value);
     }
 
     return true;

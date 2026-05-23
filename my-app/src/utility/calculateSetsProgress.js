@@ -1,14 +1,13 @@
 // EDITED BY CODEX
-export function filterCardsSets(array) {
+export function calculateSetsProgress(array) {
   if (!Array.isArray(array)) return [];
   return array.map((set) => {
     const cards = Array.isArray(set?.cards) ? set.cards : [];
     const setProgress =
       cards.length > 0
         ? Math.round(
-            (cards.filter((card) => card.isUnderstood).length /
-              cards.length) *
-            100,
+            (cards.filter((card) => card.isUnderstood).length / cards.length) *
+              100,
           )
         : 0;
 

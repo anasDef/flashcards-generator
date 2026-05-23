@@ -5,7 +5,7 @@ import { Link } from "react-router";
 import { useContext, useMemo, useState } from "react";
 import SetCard from "../components/SetCard";
 import { FlashcardsContext } from "../context/FlashcardsContext";
-import { filterCardsSets } from "../utility/filterArray";
+import { calculateSetsProgress } from "../utility/calculateSetsProgress";
 import "./Home.css";
 
 // Available filter options translating performance level indicators to Arabic labels
@@ -34,7 +34,7 @@ export default function Home() {
   // Memoized array of sets with calculated progress scores and tone levels,
   // filtered according to the user's active selection.
   const filteredSets = useMemo(() => {
-    const computedSets = filterCardsSets(cardsSets);
+    const computedSets = calculateSetsProgress(cardsSets);
     if (selectedFilter === "all") return computedSets;
     return computedSets.filter((set) => set.calculatedTone === selectedFilter);
   }, [cardsSets, selectedFilter]);
@@ -64,8 +64,9 @@ export default function Home() {
               {filters.map((filter) => (
                 <button
                   key={filter.id}
-                  className={`home__filter-button ${filter.tone ? `home__filter-button--${filter.tone}` : ""
-                    } ${filter.tone === selectedFilter ? "active" : ""}`}
+                  className={`home__filter-button ${
+                    filter.tone ? `home__filter-button--${filter.tone}` : ""
+                  } ${filter.tone === selectedFilter ? "active" : ""}`}
                   type="button"
                   value={filter.tone}
                   onClick={(event) =>
@@ -93,8 +94,9 @@ export default function Home() {
               >
                 <span>{activeFilterLabel}</span>
                 <IoChevronDown
-                  className={`home__dropdown-icon ${isDropdownOpen ? "home__dropdown-icon--open" : ""
-                    }`}
+                  className={`home__dropdown-icon ${
+                    isDropdownOpen ? "home__dropdown-icon--open" : ""
+                  }`}
                 />
               </button>
 
@@ -103,8 +105,9 @@ export default function Home() {
                   {filters.map((filter) => (
                     <button
                       key={filter.id}
-                      className={`home__dropdown-item ${filter.tone === selectedFilter ? "active" : ""
-                        }`}
+                      className={`home__dropdown-item ${
+                        filter.tone === selectedFilter ? "active" : ""
+                      }`}
                       type="button"
                       onClick={() => {
                         setSelectedFilter(filter.tone);
@@ -157,4 +160,3 @@ export default function Home() {
     </main>
   );
 }
-

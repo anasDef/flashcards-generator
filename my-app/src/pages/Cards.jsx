@@ -1,6 +1,6 @@
 // EDITED BY CODEX
 
-import { useContext, useState, useRef } from "react";
+import { useContext, useState, useRef, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router";
 import {
   IoChevronForward,
@@ -25,9 +25,13 @@ const Cards = () => {
   const [slideClass, setSlideClass] = useState("");
   const isAnimating = useRef(false);
 
-  if (currentIndex === cards.length) navigateToHome("/");
-
   const activeCard = cards[currentIndex];
+
+  useEffect(() => {
+    if (cards.length > 0 && currentIndex === cards.length) {
+      navigateToHome("/");
+    }
+  }, [currentIndex, cards]);
 
   // ====== HANDLERS ====== //
 
