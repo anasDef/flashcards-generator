@@ -28,6 +28,7 @@ export async function generateFlashcardsFromAi(
       
             Flashcard Structuring Rules:
             - Each flashcard must strictly consist of a "front" (question, concept, or term) and a "back" (accurate answer or concise explanation).
+            - The "back" of each flashcard must be brief, short, and use a maximum of 30 words.
             - Ensure a diverse range of questions (e.g., definitions, wh-questions, conceptual checks).
         `;
 
