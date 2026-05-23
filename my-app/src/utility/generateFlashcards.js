@@ -70,9 +70,8 @@ export async function generateFlashcardsFromAi(
             }
         `;
 
-    // 4️⃣ بنكلم السيرفر بتاعنا بدل Groq مباشرةً — الـ API key بقى على السيرفر بس
     const response = await fetch(
-      "http://localhost:3001/api/generate-flashcards",
+      "https://flashcards-generator-gdjc.onrender.com",
       {
         method: "POST",
         headers: {

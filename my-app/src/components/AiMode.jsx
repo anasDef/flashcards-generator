@@ -4,7 +4,7 @@ import { useState, useContext } from "react";
 import { BsStars } from "react-icons/bs";
 import { FiFileText, FiLink, FiUploadCloud } from "react-icons/fi";
 import { FlashcardsContext } from "../context/FlashcardsContext";
-import { generateFlashcardsFromAi } from "../utility/groqFunctions";
+import { generateFlashcardsFromAi } from "../utility/generateFlashcards";
 import "./AiMode.css";
 
 const aiModeSourceFields = [
