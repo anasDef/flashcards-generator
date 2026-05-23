@@ -1,0 +1,242 @@
+/* ============================================================
+   FLASHCARD LOADER OVERLAY
+   ============================================================ */
+.flashcard-loader-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  /* Glassmorphism backdrop matching brand colors */
+  background-color: rgba(255, 248, 246, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  
+  /* Fade-in screen transition */
+  animation: fadeInOverlay 0.35s ease-out forwards;
+}
+
+@keyframes fadeInOverlay {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.flashcard-loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  padding: 40px;
+  max-width: 420px;
+  width: 90%;
+  text-align: center;
+}
+
+/* ============================================================
+   3D FLASHCARD SHUFFLING STACK ANIMATION
+   ============================================================ */
+.flashcard-loader-stack {
+  position: relative;
+  width: 220px;
+  height: 260px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1000px;
+}
+
+.loader-card {
+  position: absolute;
+  width: 160px;
+  height: 220px;
+  border-radius: var(--rounded-md);
+  background-color: var(--color-surface-container-lowest);
+  border: 2px solid var(--color-outline-variant);
+  box-shadow:
+    0 4px 0 var(--color-primary-container),
+    0 6px 24px rgba(70, 22, 2, 0.08);
+  padding: 24px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  
+  /* Apply the shuffling animation loop */
+  animation: cardCycle 3.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* Staggered animation delays for seamless shuffling rotation */
+.loader-card--1 {
+  animation-delay: 0s;
+}
+
+.loader-card--2 {
+  animation-delay: -1.2s;
+}
+
+.loader-card--3 {
+  animation-delay: -2.4s;
+}
+
+@keyframes cardCycle {
+  0%, 100% {
+    /* Top / Front Card */
+    transform: translate3d(0, 0, 30px) scale(1) rotate(0deg);
+    z-index: 3;
+    opacity: 1;
+    filter: drop-shadow(0 12px 24px rgba(70, 22, 2, 0.15));
+  }
+  30% {
+    /* Slide out to the side */
+    transform: translate3d(-120px, -10px, 30px) scale(0.95) rotate(-10deg);
+    z-index: 3;
+    opacity: 0.9;
+  }
+  35% {
+    /* Move behind */
+    z-index: 1;
+  }
+  60% {
+    /* Bottom / Back Card */
+    transform: translate3d(0, -18px, -30px) scale(0.82) rotate(4deg);
+    z-index: 1;
+    opacity: 0.45;
+    filter: drop-shadow(0 4px 8px rgba(70, 22, 2, 0.04));
+  }
+  65% {
+    /* Move to middle layer stacking */
+    z-index: 2;
+  }
+  82% {
+    /* Middle Card */
+    transform: translate3d(0, -9px, 0) scale(0.91) rotate(-3deg);
+    z-index: 2;
+    opacity: 0.8;
+    filter: drop-shadow(0 8px 16px rgba(70, 22, 2, 0.08));
+  }
+}
+
+/* ============================================================
+   CARD INNER COMPONENTS styling
+   ============================================================ */
+.loader-card-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 12px;
+  border-radius: var(--rounded-full);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  background-color: var(--color-secondary-container);
+  color: var(--color-on-secondary-container);
+}
+
+.loader-card-badge--definition {
+  background-color: var(--color-tertiary-container);
+  color: var(--color-on-tertiary-container);
+}
+
+.loader-card-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin: auto 0;
+}
+
+.loader-card-line {
+  height: 6px;
+  width: 80%;
+  background-color: var(--color-surface-variant);
+  border-radius: var(--rounded-full);
+  opacity: 0.75;
+}
+
+.loader-card-line--long {
+  width: 100%;
+}
+
+.loader-card-line--medium {
+  width: 70%;
+}
+
+.loader-card-line--short {
+  width: 50%;
+}
+
+.loader-card-stars {
+  font-size: 16px;
+  color: var(--color-secondary);
+  animation: starBlink 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes starBlink {
+  from {
+    transform: scale(0.85) rotate(0deg);
+    opacity: 0.6;
+  }
+  to {
+    transform: scale(1.15) rotate(15deg);
+    opacity: 1;
+  }
+}
+
+/* ============================================================
+   TEXT ROTATION FADE TRANSITIONS
+   ============================================================ */
+.flashcard-loader-text-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.flashcard-loader-text {
+  font-size: var(--font-body-lg-size);
+  font-weight: var(--font-body-lg-weight);
+  line-height: var(--font-body-lg-line-height);
+  color: var(--color-primary);
+  margin: 0;
+  min-height: 56px; /* Prevents layout shifting when text flips */
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.flashcard-loader-text.fade-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.flashcard-loader-text.fade-out {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+.flashcard-loader-subtext {
+  font-size: var(--font-label-sm-size);
+  font-weight: var(--font-label-sm-weight);
+  line-height: var(--font-label-sm-line-height);
+  color: var(--color-on-surface-variant);
+  opacity: 0.75;
+  letter-spacing: 0.05em;
+  
+  /* Blinking pulse animation for warning/subtext */
+  animation: pulseSubtext 2s ease-in-out infinite;
+}
+
+@keyframes pulseSubtext {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}

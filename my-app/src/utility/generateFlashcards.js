@@ -30,6 +30,7 @@ export async function generateFlashcardsFromAi(
             - Each flashcard must strictly consist of a "front" (question, concept, or term) and a "back" (accurate answer or concise explanation).
             - The "back" of each flashcard must be brief, short, and use a maximum of 20 words.
             - Ensure a diverse range of questions (e.g., definitions, wh-questions, conceptual checks).
+            - use arabic language except for the english definitions use engilsh, as default if user does not specify language.
         `;
 
     // Inject YouTube transcript data OR fallback to URL context if transcript failed

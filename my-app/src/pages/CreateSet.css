@@ -134,6 +134,12 @@
   .create-set__footer {
     padding-block: var(--spacing-card-gap);
   }
+
+  .create-set__save-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+  }
 }
 
 @media (max-width: 768px) {
