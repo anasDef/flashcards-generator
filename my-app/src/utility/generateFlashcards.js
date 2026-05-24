@@ -29,11 +29,7 @@ export async function generateFlashcardsFromAi(youtubeLinks, contentFile, instru
       }
     } catch (ytError) {
       // Propagate a structured error for the UI
-      throw {
-        type: "YOUTUBE_ERROR",
-        title: "Invalid YouTube URL",
-        description: "One of the provided links is incorrect or lacks a transcript.",
-      };
+      throw ytError
     }
 
     // ---------- Build prompt ----------
@@ -100,7 +96,7 @@ export async function generateFlashcardsFromAi(youtubeLinks, contentFile, instru
 
     // ---------- Send request to backend ----------
     const response = await fetch(
-      "https://flashcards-generator-sbvg.onrender.com/api/generate-flashcards",
+      "http://localhost:3001/api/generate-flashcards",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -138,18 +134,22 @@ export async function generateFlashcardsFromAi(youtubeLinks, contentFile, instru
     return structuredFlashcards;
   } catch (error) {
     // Propagate already‑structured UI errors
-    if (error.title && error.description) {
+    if (error.type || (error.title && error.description)) {
       throw error;
     }
+
     // Network or unexpected errors
     if (!navigator.onLine || error.message?.includes("fetch")) {
       throw {
+        type: "NETWORK_ERROR",
         title: "Connection Failed",
         description: "Unable to reach the server. Check your internet connection.",
       };
     }
+
     // Fallback generic error
     throw {
+      type: "UNKNOWN_ERROR",
       title: "Generation Failed",
       description: "An unexpected error occurred while creating flashcards.",
     };

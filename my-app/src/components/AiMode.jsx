@@ -1,6 +1,4 @@
-// EDITED BY CODEX
-// These edits for you comment (codex)
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { BsStars } from "react-icons/bs";
 import { FiFileText, FiLink, FiUploadCloud, FiPlus, FiX } from "react-icons/fi";
 import { FlashcardsContext } from "../context/FlashcardsContext";
@@ -23,12 +21,11 @@ const aiModeSourceFields = [
 ];
 
 export default function AiMode({ handleModeChange }) {
-    // These edits for you comment (codex)
+    // STATES
     const { handleSpecificCurrentSetChange } = useContext(FlashcardsContext);
     const [isLoading, setIsLoading] = useState(false);
     const [aiModeFields, setAiModeFields] = useState({
         youtubeLinks: [""],
-        // These edits for you comment (codex)
         contentFile: null,
         instructions: "",
     });
@@ -84,13 +81,23 @@ export default function AiMode({ handleModeChange }) {
             console.error("Error generating flashcards:", error);
 
             setErrorStatus({
-                title: err.title || "An Error Occurred",
-                description: err.description || "Something went wrong. Please try again.",
+                title: error.title,
+                description: error.description,
             });
         } finally {
             setIsLoading(false);
         }
     };
+
+    // remove the error msg after 5 seconds
+    useEffect(() => {
+        if (errorStatus.title && errorStatus.description) {
+            const timer = setTimeout(() => {
+                setErrorStatus({ title: "", description: "" });
+            }, 5000);
+            return () => clearTimeout(timer);
+        }
+    }, [errorStatus]);
 
     const urlCount = aiModeFields.youtubeLinks.length;
     const canAddMore = urlCount < MAX_URLS;
@@ -167,7 +174,6 @@ export default function AiMode({ handleModeChange }) {
                     {/* ── File upload field (unchanged) ── */}
                     {aiModeSourceFields.map((field) => {
                         const isFileField = field.type === "file";
-                        // These edits for you comment (codex)
                         const uploadedFile = aiModeFields[field.key];
                         const fileName = uploadedFile?.name ?? "";
 
@@ -198,7 +204,6 @@ export default function AiMode({ handleModeChange }) {
                                         <FiUploadCloud className="ai-mode__control-icon" aria-hidden="true" />
                                     </span>
                                 ) : (
-                                    // These edits for you comment (codex)
                                     <span className="ai-mode__control">
                                         <input
                                             className="ai-mode__control-field"
@@ -238,6 +243,7 @@ export default function AiMode({ handleModeChange }) {
                     <BsStars aria-hidden="true" />
                     توليد البطاقات التعليمية
                 </button>
+
 
                 <ErrorMsg title={errorStatus.title} description={errorStatus.description} />
             </section>

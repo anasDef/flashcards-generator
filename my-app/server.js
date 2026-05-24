@@ -23,6 +23,7 @@ app.get("/api/transcript", async (req, res) => {
     const fullText = transcript.map(t => t.text).join(" ");
     res.json({ transcript: fullText });
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: error.message });
   }
 });

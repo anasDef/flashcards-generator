@@ -10,7 +10,10 @@ export async function fetchYoutubeTranscript(url) {
         return data.transcript ?? "";
 
     } catch (error) {
-        console.warn("Failed to fetch transcript:", error.message);
-        return "";
+        throw {
+            type: "YOUTUBE_ERROR",
+            title: "Invalid YouTube URL",
+            description: "One of the provided links is incorrect or lacks a transcript.",
+        };
     }
 }
