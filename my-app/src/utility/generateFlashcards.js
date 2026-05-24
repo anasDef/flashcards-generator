@@ -96,7 +96,7 @@ export async function generateFlashcardsFromAi(youtubeLinks, contentFile, instru
 
     // ---------- Send request to backend ----------
     const response = await fetch(
-      "http://localhost:3001/api/generate-flashcards",
+      "https://flashcards-generator-7ego.onrender.com/api/generate-flashcards",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
