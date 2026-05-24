@@ -1,0 +1,202 @@
+/* EDITED BY CODEX */
+
+/* ─────────────────────────────────────────────────────
+   Local tokens not present in index.css:
+   - --error-card-shadow : soft red-tinted drop shadow
+   - --error-warning-bg  : warm amber for the icon badge
+     (matches the secondary/warning palette in the mockup)
+───────────────────────────────────────────────────── */
+.wrapper {
+  /* ── Position: fixed bottom-left toast ── */
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 9999;
+
+  /* Clip the card while it sits below the wrapper boundary */
+  overflow: hidden;
+
+  /* Sized to fit the card; never wider than 340px */
+  width: min(340px, calc(100vw - 40px));
+  padding: 10px;
+
+  /* Pointer events pass through when card is hidden */
+  pointer-events: none;
+
+  .error-msg {
+    /* ── Layout: icon-badge | text | close-btn ──
+       Direction is RTL so the DOM order is:
+         close-btn (left) | text (centre) | icon-badge (right)
+       which visually renders as expected in RTL. */
+    display: flex;
+    flex-direction: row-reverse;
+    /* badge on right, close on left in RTL */
+    align-items: center;
+    gap: var(--spacing-gutter);
+
+    /* Hidden state: card sits entirely below the wrapper */
+    transform: translateY(120%);
+
+    /* ── Sizing & Spacing ── */
+    padding: var(--spacing-gutter);
+
+    /* ── Visual style ── */
+    background-color: var(--color-error-container);
+    border-radius: var(--rounded-full);
+    box-shadow: 4px 0px 0px var(--color-error), 0px 2px 6px rgba(98, 43, 20, 0.267);
+
+    /* Interactive when visible */
+    pointer-events: auto;
+
+    /* ── Warning icon badge (right side in RTL) ── */
+    .error-msg__wraning {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      /* Circular amber badge */
+      width: 40px;
+      height: 40px;
+      border-radius: var(--rounded-full);
+      background-color: var(--color-error);
+
+      .error-msg__wraning-icon {
+        font-size: 22px;
+        color: var(--color-on-error);
+      }
+    }
+
+    /* ── Text block (centre) ── */
+    .error-msg__info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      text-align: right;
+      min-width: 0;
+      /* allow text to shrink/wrap */
+
+      .error-msg__title {
+        font-family: var(--font-family-body);
+        font-size: var(--font-label-lg-size);
+        font-weight: var(--font-label-lg-weight);
+        line-height: var(--font-label-lg-line-height);
+        color: var(--color-on-error-container);
+      }
+
+      .error-msg__descritp {
+        font-family: var(--font-family-body);
+        font-size: var(--font-label-sm-size);
+        font-weight: var(--font-label-sm-weight);
+        line-height: var(--font-label-sm-line-height);
+        color: var(--color-on-surface-variant);
+      }
+    }
+
+    /* ── Close button (left side in RTL) ── */
+    .error-msg__icon-wrapper {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      color: var(--color-error);
+      transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
+
+      &:hover {
+        transform: scale(1.15);
+      }
+
+      .error-msg__icon {
+        font-size: 20px;
+      }
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────
+     .active — triggers the bounce-in from below.
+
+     Since the wrapper sits at bottom: 20px and the card
+     starts at translateY(+110%) (below the wrapper edge),
+     the sequence is:
+
+       0%   → +110% (hidden below the wrapper)
+       55%  →    0% (card shoots up and hits the top boundary)
+       70%  →  +18% (rebounds downward — first bounce)
+       83%  →    0% (rises back up)
+       91%  →   +7% (micro-bounce)
+      100%  →    0% (comes to rest, fully visible)
+  ───────────────────────────────────────────────────── */
+  &.active {
+    .error-msg {
+      animation: error-bounce-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+  }
+}
+
+/* ── Bounce keyframes (drop from above) ── */
+@keyframes error-bounce-in {
+  0% {
+    transform: translateY(-110%);
+    animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45);
+  }
+
+  55% {
+    transform: translateY(0%);
+    animation-timing-function: cubic-bezier(0, 0, 0.4, 1);
+  }
+
+  /* First rebound — bounces back UP after impact */
+  70% {
+    transform: translateY(-18%);
+    animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45);
+  }
+
+  83% {
+    transform: translateY(0%);
+    animation-timing-function: cubic-bezier(0, 0, 0.4, 1);
+  }
+
+  /* Micro-bounce */
+  91% {
+    transform: translateY(-7%);
+    animation-timing-function: ease-out;
+  }
+
+  100% {
+    transform: translateY(0%);
+  }
+}
+
+/* ── Mobile adjustments ── */
+@media (max-width: 768px) {
+  .wrapper {
+    bottom: 16px;
+    left: 16px;
+    width: min(300px, calc(100vw - 32px));
+
+    .error-msg {
+      gap: var(--spacing-base);
+      padding: var(--spacing-base) var(--spacing-gutter);
+
+      .error-msg__wraning {
+        width: 34px;
+        height: 34px;
+
+        .error-msg__wraning-icon {
+          font-size: 18px;
+        }
+      }
+
+      .error-msg__icon-wrapper {
+        .error-msg__icon {
+          font-size: 18px;
+        }
+      }
+    }
+  }
+}

@@ -6,6 +6,7 @@ import { useContext, useMemo, useState } from "react";
 import SetCard from "../components/SetCard";
 import { FlashcardsContext } from "../context/FlashcardsContext";
 import { calculateSetsProgress } from "../utility/calculateSetsProgress";
+import ErrorMsg from "../components/ErrorMsg";
 import "./Home.css";
 
 // Available filter options translating performance level indicators to Arabic labels
@@ -64,9 +65,8 @@ export default function Home() {
               {filters.map((filter) => (
                 <button
                   key={filter.id}
-                  className={`home__filter-button ${
-                    filter.tone ? `home__filter-button--${filter.tone}` : ""
-                  } ${filter.tone === selectedFilter ? "active" : ""}`}
+                  className={`home__filter-button ${filter.tone ? `home__filter-button--${filter.tone}` : ""
+                    } ${filter.tone === selectedFilter ? "active" : ""}`}
                   type="button"
                   value={filter.tone}
                   onClick={(event) =>
@@ -94,9 +94,8 @@ export default function Home() {
               >
                 <span>{activeFilterLabel}</span>
                 <IoChevronDown
-                  className={`home__dropdown-icon ${
-                    isDropdownOpen ? "home__dropdown-icon--open" : ""
-                  }`}
+                  className={`home__dropdown-icon ${isDropdownOpen ? "home__dropdown-icon--open" : ""
+                    }`}
                 />
               </button>
 
@@ -105,9 +104,8 @@ export default function Home() {
                   {filters.map((filter) => (
                     <button
                       key={filter.id}
-                      className={`home__dropdown-item ${
-                        filter.tone === selectedFilter ? "active" : ""
-                      }`}
+                      className={`home__dropdown-item ${filter.tone === selectedFilter ? "active" : ""
+                        }`}
                       type="button"
                       onClick={() => {
                         setSelectedFilter(filter.tone);
@@ -157,6 +155,8 @@ export default function Home() {
           <p className="home__no-sets">لا يوجد مجموعات</p>
         )}
       </section>
+
+      <ErrorMsg />
     </main>
   );
 }

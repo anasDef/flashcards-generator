@@ -55,7 +55,7 @@
   /* Colors - Error */
   --color-error: #ba1a1a;
   --color-on-error: #ffffff;
-  --color-error-container: #ffdad6;
+  --color-error-container: #fdedeb;
   --color-on-error-container: #93000a;
 
   /* Colors - Background */
@@ -166,5 +166,12 @@ body {
   &:active {
     transform: translateY(4px);
     box-shadow: none;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+    pointer-events: none;
   }
 }

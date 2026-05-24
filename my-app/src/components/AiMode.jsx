@@ -2,21 +2,16 @@
 // These edits for you comment (codex)
 import { useState, useContext } from "react";
 import { BsStars } from "react-icons/bs";
-import { FiFileText, FiLink, FiUploadCloud } from "react-icons/fi";
+import { FiFileText, FiLink, FiUploadCloud, FiPlus, FiX } from "react-icons/fi";
 import { FlashcardsContext } from "../context/FlashcardsContext";
 import { generateFlashcardsFromAi } from "../utility/generateFlashcards";
 import FlashcardLoader from "./FlashcardLoader";
+import ErrorMsg from "./ErrorMsg"
 import "./AiMode.css";
 
+const MAX_URLS = 5;
+
 const aiModeSourceFields = [
-    {
-        id: "ai-youtube-link",
-        key: "youtubeLink",
-        label: "رابط يوتيوب",
-        placeholder: "https://youtube.com/watch?v=...",
-        type: "url",
-        icon: <FiLink aria-hidden="true" />,
-    },
     {
         id: "ai-content-file",
         key: "contentFile",
@@ -32,11 +27,39 @@ export default function AiMode({ handleModeChange }) {
     const { handleSpecificCurrentSetChange } = useContext(FlashcardsContext);
     const [isLoading, setIsLoading] = useState(false);
     const [aiModeFields, setAiModeFields] = useState({
-        youtubeLink: "",
+        youtubeLinks: [""],
         // These edits for you comment (codex)
         contentFile: null,
         instructions: "",
     });
+
+    const [errorStatus, setErrorStatus] = useState({
+        title: "",
+        description: "",
+    });
+
+    // ===== URL LIST HANDLERS ===== //
+    const handleUrlChange = (index, value) => {
+        setAiModeFields((prev) => {
+            const updated = [...prev.youtubeLinks];
+            updated[index] = value;
+            return { ...prev, youtubeLinks: updated };
+        });
+    };
+
+    const handleAddUrl = () => {
+        setAiModeFields((prev) => {
+            if (prev.youtubeLinks.length >= MAX_URLS) return prev;
+            return { ...prev, youtubeLinks: [...prev.youtubeLinks, ""] };
+        });
+    };
+
+    const handleRemoveUrl = (index) => {
+        setAiModeFields((prev) => {
+            const updated = prev.youtubeLinks.filter((_, i) => i !== index);
+            return { ...prev, youtubeLinks: updated.length ? updated : [""] };
+        });
+    };
 
     // ===== HANDLERS ===== //
     const handleFieldChange = (key, value) => {
@@ -50,17 +73,31 @@ export default function AiMode({ handleModeChange }) {
         if (isLoading) return;
         setIsLoading(true);
         try {
-            const { youtubeLink, contentFile, instructions } = aiModeFields;
-            const aiFlashcards = await generateFlashcardsFromAi(youtubeLink, contentFile, instructions);
+            const { youtubeLinks, contentFile, instructions } = aiModeFields;
+            // Filter out empty inputs before passing them
+            const filledLinks = youtubeLinks.filter((url) => url.trim() !== "");
+            const aiFlashcards = await generateFlashcardsFromAi(filledLinks, contentFile, instructions);
 
             handleSpecificCurrentSetChange("cards", aiFlashcards);
             handleModeChange("manual");
         } catch (error) {
             console.error("Error generating flashcards:", error);
+
+            setErrorStatus({
+                title: err.title || "An Error Occurred",
+                description: err.description || "Something went wrong. Please try again.",
+            });
         } finally {
             setIsLoading(false);
         }
-    }
+    };
+
+    const urlCount = aiModeFields.youtubeLinks.length;
+    const canAddMore = urlCount < MAX_URLS;
+
+    const hasYoutubeLink = aiModeFields.youtubeLinks.some((url) => url.trim() !== "");
+    const hasContentFile = !!aiModeFields.contentFile;
+    const isValidSource = hasYoutubeLink || hasContentFile;
 
     return (
         <>
@@ -71,6 +108,63 @@ export default function AiMode({ handleModeChange }) {
                 </h2>
 
                 <div className="ai-mode__source-fields">
+                    {/* ── Dynamic YouTube URL inputs ── */}
+                    <div className="ai-mode__field ai-mode__field--urls">
+                        <div className="ai-mode__field-header">
+                            <span className="ai-mode__label">رابط يوتيوب</span>
+                            <div className="ai-mode__url-header-actions">
+                                <span className="ai-mode__url-counter" aria-live="polite">
+                                    {urlCount} / {MAX_URLS}
+                                </span>
+                                {canAddMore && (
+                                    <button
+                                        className="ai-mode__url-add"
+                                        type="button"
+                                        disabled={isLoading}
+                                        onClick={handleAddUrl}
+                                    >
+                                        <FiPlus aria-hidden="true" />
+                                        أضف رابطاً آخر
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="ai-mode__url-list">
+                            {aiModeFields.youtubeLinks.map((url, index) => (
+                                <div className="ai-mode__url-row" key={index}>
+                                    <span className="ai-mode__control ai-mode__control--url">
+                                        <input
+                                            className="ai-mode__control-field"
+                                            id={index === 0 ? "ai-youtube-link" : `ai-youtube-link-${index}`}
+                                            type="url"
+                                            placeholder="https://youtube.com/watch?v=..."
+                                            value={url}
+                                            disabled={isLoading}
+                                            onChange={(e) => handleUrlChange(index, e.target.value)}
+                                            aria-label={`رابط يوتيوب ${index + 1}`}
+                                        />
+                                        <FiLink aria-hidden="true" />
+                                    </span>
+
+                                    {/* Show remove button for every row when there are multiple */}
+                                    {urlCount > 1 && (
+                                        <button
+                                            className="ai-mode__url-remove"
+                                            type="button"
+                                            aria-label={`حذف الرابط ${index + 1}`}
+                                            disabled={isLoading}
+                                            onClick={() => handleRemoveUrl(index)}
+                                        >
+                                            <FiX aria-hidden="true" />
+                                        </button>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* ── File upload field (unchanged) ── */}
                     {aiModeSourceFields.map((field) => {
                         const isFileField = field.type === "file";
                         // These edits for you comment (codex)
@@ -136,14 +230,16 @@ export default function AiMode({ handleModeChange }) {
                 </label>
 
                 <button
-                    className="ai-mode__generate-button"
+                    className={`button ai-mode__generate-button ${isValidSource ? "" : "disabled"}`}
                     type="button"
-                    disabled={isLoading}
-                    onClick={() => { handleGenerateClick() }}
+                    disabled={isLoading || !isValidSource}
+                    onClick={() => { handleGenerateClick(); }}
                 >
                     <BsStars aria-hidden="true" />
                     توليد البطاقات التعليمية
                 </button>
+
+                <ErrorMsg title={errorStatus.title} description={errorStatus.description} />
             </section>
         </>
     );

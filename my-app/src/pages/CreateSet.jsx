@@ -8,6 +8,7 @@ import { BsStars } from "react-icons/bs";
 import { FaRegSave } from "react-icons/fa";
 import ManualMode from "../components/ManualMode";
 import AiMode from "../components/AiMode";
+import { isValidContentObject } from "../utility/isValidContentObject";
 import "./CreateSet.css";
 
 // Config array defining inputs for the flashcard set meta details (Title & Description)
@@ -72,6 +73,8 @@ export default function CreateSet() {
       }
     }
   }, [setId, cardsSets]);
+
+  const isValid = isValidContentObject({ cards: currentSet.cards });
 
   return (
     <main className="create-set">
@@ -150,6 +153,7 @@ export default function CreateSet() {
         <footer className="create-set__footer">
           <button
             className="create-set__save-button button"
+            disabled={!isValid}
             onClick={() => {
               if (isEdit) {
                 handleSaveEditClick(currentSet);
