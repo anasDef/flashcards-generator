@@ -32,7 +32,6 @@ export default function Home() {
     filters.find((filter) => filter.tone === selectedFilter)?.label ||
     filters[0].label;
 
-  // Memoized array of sets with calculated progress scores and tone levels,
   // filtered according to the user's active selection.
   const filteredSets = useMemo(() => {
     const computedSets = calculateSetsProgress(cardsSets);

@@ -1,6 +1,6 @@
 // EDITED BY CODEX
 
-import { useContext, useState, useRef, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router";
 import {
   IoChevronForward,
@@ -10,35 +10,22 @@ import {
   IoClose,
 } from "react-icons/io5";
 import { FlashcardsContext } from "../context/FlashcardsContext";
+import { useCardNavigation } from "../hooks/useCardNavigation.js";
 import "./Cards.css";
 
 const Cards = () => {
   const { setId } = useParams();
   const { cardsSets, handleEditSetClick } = useContext(FlashcardsContext);
-  const navigateToHome = useNavigate();
-
   const currentSet = cardsSets?.find((set) => set.id == setId);
   const cards = currentSet?.cards || [];
-
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isFlipped, setIsFlipped] = useState(false);
-  const [slideClass, setSlideClass] = useState("");
-  const isAnimating = useRef(false);
-
+  const { currentIndex, isFlipped, slideClass, navigate, handleFlip } = useCardNavigation(cards);
+  const navigateToHome = useNavigate();
   const activeCard = cards[currentIndex];
 
-  useEffect(() => {
-    if (cards.length > 0 && currentIndex === cards.length) {
-      navigateToHome("/");
-    }
-  }, [currentIndex, cards]);
-
-  // ====== HANDLERS ====== //
-
-  // ── Flip the active card front ↔ back ──────────────────────────────────
-  const handleFlip = () => {
-    setIsFlipped((prev) => !prev);
-  };
+  // if the user reached the end navigate them to the home page
+  if (cards.length > 0 && currentIndex === cards.length) {
+    navigateToHome("/");
+  }
 
   // ── Mark the active card as understood / not understood ───────────────
   const handleUnderstoodClick = (isUnderstood) => {
@@ -47,41 +34,6 @@ const Cards = () => {
     );
     handleEditSetClick({ ...currentSet, cards: updatedCards });
     navigate("next");
-  };
-
-  // ── Navigate between cards with slide-fade transition ──────────────────
-  const navigate = (direction) => {
-    if (isAnimating.current) return;
-
-    const newIndex = direction === "next" ? currentIndex + 1 : currentIndex - 1;
-
-    if (newIndex === currentIndex) return;
-
-    isAnimating.current = true;
-
-    // Exit animation: next slides left, prev slides right (RTL aware)
-    const exitClass =
-      direction === "next"
-        ? "cards__card-wrapper--exit-left"
-        : "cards__card-wrapper--exit-right";
-
-    const enterClass =
-      direction === "next"
-        ? "cards__card-wrapper--enter-right"
-        : "cards__card-wrapper--enter-left";
-
-    setSlideClass(exitClass);
-
-    setTimeout(() => {
-      setCurrentIndex(newIndex);
-      setIsFlipped(false);
-      setSlideClass(enterClass);
-
-      setTimeout(() => {
-        setSlideClass("");
-        isAnimating.current = false;
-      }, 350);
-    }, 280);
   };
 
   const progress = cards.length ? ((currentIndex + 1) / cards.length) * 100 : 0;
@@ -163,7 +115,7 @@ const Cards = () => {
           <button
             className="cards__nav-btn"
             onClick={() => navigate("next")}
-            disabled={currentIndex === cards.length - 1}
+            disabled={currentIndex == cards.length}
             aria-label="البطاقة التالية"
           >
             <IoChevronBack />

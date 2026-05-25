@@ -1,10 +1,11 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useMemo, useReducer } from "react";
 import { BsStars } from "react-icons/bs";
 import { FiFileText, FiLink, FiUploadCloud, FiPlus, FiX } from "react-icons/fi";
 import { FlashcardsContext } from "../context/FlashcardsContext";
 import { generateFlashcardsFromAi } from "../utility/generateFlashcards";
 import FlashcardLoader from "./FlashcardLoader";
 import ErrorMsg from "./ErrorMsg"
+import { aiModeInputsReducer } from "../reducers/AiModeReducer";
 import "./AiMode.css";
 
 const MAX_URLS = 5;
@@ -13,7 +14,7 @@ const aiModeSourceFields = [
     {
         id: "ai-content-file",
         key: "contentFile",
-        label: "ارفع ملفك (PDF, DOCX, TXT, MD, CSV)",
+        label: "ارفع ملفك (PDF, DOCX, TXT, MD,PPTX)",
         placeholder: "اختر أو اسحب الملف",
         type: "file",
         icon: <FiFileText aria-hidden="true" />,
@@ -21,10 +22,10 @@ const aiModeSourceFields = [
 ];
 
 export default function AiMode({ handleModeChange }) {
-    // STATES
     const { handleSpecificCurrentSetChange } = useContext(FlashcardsContext);
     const [isLoading, setIsLoading] = useState(false);
-    const [aiModeFields, setAiModeFields] = useState({
+
+    const [aiModeFields, aiModeFieldsDispatch] = useReducer(aiModeInputsReducer, {
         youtubeLinks: [""],
         contentFile: null,
         instructions: "",
@@ -37,33 +38,20 @@ export default function AiMode({ handleModeChange }) {
 
     // ===== URL LIST HANDLERS ===== //
     const handleUrlChange = (index, value) => {
-        setAiModeFields((prev) => {
-            const updated = [...prev.youtubeLinks];
-            updated[index] = value;
-            return { ...prev, youtubeLinks: updated };
-        });
+        aiModeFieldsDispatch({ type: "URL_CHANGE", payload: { index, value } });
     };
 
     const handleAddUrl = () => {
-        setAiModeFields((prev) => {
-            if (prev.youtubeLinks.length >= MAX_URLS) return prev;
-            return { ...prev, youtubeLinks: [...prev.youtubeLinks, ""] };
-        });
+        aiModeFieldsDispatch({ type: "ADD_URL", payload: { MAX_URLS } })
     };
 
     const handleRemoveUrl = (index) => {
-        setAiModeFields((prev) => {
-            const updated = prev.youtubeLinks.filter((_, i) => i !== index);
-            return { ...prev, youtubeLinks: updated.length ? updated : [""] };
-        });
+        aiModeFieldsDispatch({ type: "REMOVE_URL", payload: { index } });
     };
 
     // ===== HANDLERS ===== //
     const handleFieldChange = (key, value) => {
-        setAiModeFields((prevFields) => ({
-            ...prevFields,
-            [key]: value,
-        }));
+        aiModeFieldsDispatch({ type: "FIELD_CHANGE", payload: { key, value } });
     };
 
     const handleGenerateClick = async () => {
@@ -102,7 +90,10 @@ export default function AiMode({ handleModeChange }) {
     const urlCount = aiModeFields.youtubeLinks.length;
     const canAddMore = urlCount < MAX_URLS;
 
-    const hasYoutubeLink = aiModeFields.youtubeLinks.some((url) => url.trim() !== "");
+    const hasYoutubeLink = useMemo(() => {
+        return aiModeFields.youtubeLinks.some((url) => url.trim() !== "")
+    }, [aiModeFields]);
+
     const hasContentFile = !!aiModeFields.contentFile;
     const isValidSource = hasYoutubeLink || hasContentFile;
 
@@ -191,7 +182,7 @@ export default function AiMode({ handleModeChange }) {
                                             className="ai-mode__native-file"
                                             id={field.id}
                                             type="file"
-                                            accept=".pdf,.docx,.txt,.md"
+                                            accept=".pdf,.docx,.md,.txt,.pptx,image/*"
                                             disabled={isLoading}
                                             onChange={(e) =>
                                                 handleFieldChange(field.key, e.target.files[0] ?? null)
